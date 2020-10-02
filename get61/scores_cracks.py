@@ -48,8 +48,8 @@ def get_leaderboard(site, userlist):
 
 def crack_score(playercodes):
     users = []
-    daily_cracks = []
-    won_daily_cracks = []
+    cracks = []
+    won_cracks = []
     for player in playercodes.values():
 
         response = requests.get(sites['player_pages'].format(player)).text
@@ -62,13 +62,13 @@ def crack_score(playercodes):
         
         stats = [line.split('=') for line in rawstripped]
         users.append(stats[1][1].replace('"',''))
-        daily_cracks.append(stats[41][1].replace('"',''))
-        won_daily_cracks.append(stats[67][1].replace('"',''))
+        cracks.append(stats[2][1].replace('"',''))
+        won_cracks.append(stats[28][1].replace('"',''))
 
-    crack_df = pd.DataFrame(list(zip(users, daily_cracks, won_daily_cracks)),
-                            columns= ['names', 'daily_cracks', 'won_daily_cracks'])
-    crack_df[['daily_cracks', 'won_daily_cracks']] = crack_df[['daily_cracks', 'won_daily_cracks']].apply(pd.to_numeric)
-    crack_df['winpct_cracks'] = crack_df['won_daily_cracks'] / crack_df['daily_cracks']
+    crack_df = pd.DataFrame(list(zip(users, cracks, won_cracks)),
+                            columns= ['names', 'cracks_lifetime', 'cracks_won'])
+    crack_df[['cracks_lifetime', 'cracks_won']] = crack_df[['cracks_lifetime', 'cracks_won']].apply(pd.to_numeric)
+    crack_df['winpct_cracks'] = crack_df['cracks_won'] / crack_df['cracks_lifetime']
     
     return crack_df
 
